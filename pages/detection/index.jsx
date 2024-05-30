@@ -22,7 +22,6 @@ export default function Detection() {
     const takePicture = async () => {
         if (camRef.current) {
             const data = await camRef.current.takePictureAsync();
-            console.log(data);
             setCapturedPhoto(data.uri);
             setIsModalOpen(true);
             ToastAndroid.show("Foto tirada com sucesso!", ToastAndroid.SHORT);
