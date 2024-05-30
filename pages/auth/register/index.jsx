@@ -19,10 +19,7 @@ export default function Register() {
 
     const verifyIsLogged = async () => {
         const token = await AsyncStorage.getItem('token');
-        if (token) {
-            ToastAndroid.show('Você já está logado', ToastAndroid.LONG);
-            navigation.navigate('Perfil');
-        }
+        if (token) navigation.navigate('Perfil');
     }
 
     const onSubmit = async () => {

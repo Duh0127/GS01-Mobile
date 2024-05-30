@@ -11,7 +11,7 @@ import ActionButton from '../../../components/ActionButton';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Spinner from '../../../components/Spinner';
 
-export default function Login({ updateLogin }) {
+export default function Login() {
     const navigation = useNavigation();
     const [login, setLogin] = useState({});
     const [error, setError] = useState({});
@@ -26,10 +26,7 @@ export default function Login({ updateLogin }) {
 
     const verifyIsLogged = async () => {
         const token = await AsyncStorage.getItem('token');
-        if (token) {
-            ToastAndroid.show('Você já está logado', ToastAndroid.LONG);
-            navigation.navigate('Perfil');
-        }
+        if (token) navigation.navigate('Perfil');
     }
 
     const onSubmit = async () => {
