@@ -1,14 +1,44 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Home from "../pages/home";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Profile from "../pages/profile";
+import Detection from "../pages/detection";
+import { ToastAndroid } from "react-native";
+
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export default function TabRoutes() {
+    const navigation = useNavigation();
+    const [user, setUser] = useState({});
+
+    const getUser = async () => {
+        try {
+            const user = await AsyncStorage.getItem('user');
+            if (user) {
+                const data = JSON.parse(user);
+                setUser(data);
+            } else setUser();
+        } catch (error) {
+            console.log({ error });
+            setUser();
+        }
+    }
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('state', () => {
+            getUser()
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     return (
         <Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
             <Screen
@@ -53,6 +83,19 @@ export default function TabRoutes() {
                 options={{
                     tabBarIcon: () => <Feather name="user" size={18} color="#fff" />,
                     tabBarLabel: "Perfil",
+                    tabBarLabelStyle: { fontSize: 16, color: "#fff" },
+                    tabBarActiveBackgroundColor: "#333",
+                    tabBarInactiveBackgroundColor: "#393D46",
+                    tabBarLabelPosition: "below-icon",
+                    tabBarVisible: user ? true : false,
+                }}
+            />
+            <Screen
+                name="Detecção"
+                component={Detection}
+                options={{
+                    tabBarIcon: () => <Feather name="camera" size={18} color="#fff" />,
+                    tabBarLabel: "Detecção",
                     tabBarLabelStyle: { fontSize: 16, color: "#fff" },
                     tabBarActiveBackgroundColor: "#333",
                     tabBarInactiveBackgroundColor: "#393D46",

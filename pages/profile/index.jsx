@@ -1,16 +1,51 @@
+import { useState, useCallback } from "react";
 import { styles } from "./styles";
-import { View, Text, ImageBackground, Image, ScrollView } from 'react-native';
-import CustomButton from '../../components/Button';
+import { View, Text, ImageBackground, Image, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import imgFundo from '../../assets/fundo_perfil.jpg';
 import perfil from '../../assets/perfil.png';
 import AnimalCard from "../../components/AnimalCard";
-import { useState } from "react";
 import CustomModal from "../../components/Modal";
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { api } from "../../services/api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ActionButton from "../../components/ActionButton";
 
 export default function Profile() {
+    const navigation = useNavigation();
+    const [usuario, setUsuario] = useState({});
     const [selectedAnimal, setSelectedAnimal] = useState({});
     const [showModal, setShowModal] = useState(false);
+
+    const getDataFromAsyncStorage = useCallback(async () => {
+        try {
+            const user = await AsyncStorage.getItem('user');
+            if (user) getStaticData(JSON.parse(user));
+            else navigation.navigate('Login');
+        } catch (error) {
+            ToastAndroid.show('Erro ao buscar dados do usuário', ToastAndroid.LONG);
+        }
+    }, []);
+
+    const getStaticData = async (user) => {
+        try {
+            console.log(user.ID_USUARIO);
+            const { data } = await api.get(`/usuario/${user.ID_USUARIO}`);
+            setUsuario(data);
+        } catch (error) {
+            ToastAndroid.show('Erro ao buscar dados do usuário', ToastAndroid.LONG);
+        }
+    }
+
+    const logout = async () => {
+        try {
+            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('user');
+            navigation.navigate('Home');
+        } catch (error) {
+            ToastAndroid.show('Erro ao deslogar', ToastAndroid.LONG);
+        }
+    }
 
     const handleCardClick = (animal) => {
         setSelectedAnimal(animal);
@@ -22,6 +57,13 @@ export default function Profile() {
         setSelectedAnimal({});
     }
 
+    useFocusEffect(
+        useCallback(() => {
+            getDataFromAsyncStorage();
+            return () => {};
+        }, [])
+    );
+
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
@@ -32,8 +74,10 @@ export default function Profile() {
                     >
                         <View style={styles.profileBox}>
                             <Image source={perfil} style={styles.imgPerfil} />
-                            <Text style={styles.name}>Eduardo Toshio</Text>
-                            <CustomButton title="Escanear Animal" />
+                            <Text style={styles.name}>{usuario.NM_USUARIO}</Text>
+                            <Text style={styles.name}>{usuario.EMAIL_USUARIO}</Text>
+                            <ActionButton title="Escanear Animal" />
+                            <ActionButton variant="danger" title="Deslogar" onPress={logout} />
                         </View>
 
                         <View style={styles.animalsContainer}>
