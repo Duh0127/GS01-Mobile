@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, ImageBackground, ToastAndroid } from 'react-native';
+import { View, Text, ImageBackground, ToastAndroid, Button, Image } from 'react-native';
 import CustomButton from '../../../components/Button';
 import { styles } from './styles';
 import Input from '../../../components/Input';
@@ -10,10 +10,12 @@ import ActionButton from '../../../components/ActionButton';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Spinner from '../../../components/Spinner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Register() {
     const navigation = useNavigation();
     const [register, setRegister] = useState({});
+    const [allImg, setAllImg] = useState(null);
     const [error, setError] = useState({});
     const [isWaiting, setIsWaiting] = useState(false);
 
@@ -27,6 +29,7 @@ export default function Register() {
         if (!register.nome) newError.nome = true;
         if (!register.email) newError.email = true;
         if (!register.senha) newError.senha = true;
+        if (!allImg) return ToastAndroid.show('Selecione uma imagem', ToastAndroid.SHORT);
 
         if (Object.keys(newError).length > 0) {
             setError(newError);
@@ -35,8 +38,23 @@ export default function Register() {
 
         try {
             register.email = register.email.toLowerCase();
+
+            let formData = new FormData();
+            formData.append('file', {
+                uri: allImg.uri,
+                name: allImg.fileName,
+                type: allImg.mimeType,
+            });
+            formData.append('nome', register.nome);
+            formData.append('email', register.email);
+            formData.append('senha', register.senha);
+
             setIsWaiting(true);
-            await api.post('/usuario', register);
+            await api.post('/usuario', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             ToastAndroid.show('Cadastro realizado com sucesso', ToastAndroid.LONG);
             navigation.navigate('Login');
         } catch (error) {
@@ -53,11 +71,31 @@ export default function Register() {
         }
     };
 
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Desculpe, precisamos de permissões para acessar a galeria!');
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [3, 4],
+            quality: 0.3,
+        });
+
+        if (!result.canceled) {
+            setAllImg(result.assets[0]);
+        }
+    };
+
     useFocusEffect(
         useCallback(() => {
             verifyIsLogged();
             setError({});
             setRegister({});
+            setAllImg(null);
             return () => { };
         }, [])
     );
@@ -97,6 +135,11 @@ export default function Register() {
                                 value={register.senha || ''}
                             />
                             {error.senha && <Text style={styles.error}>A senha é obrigatória</Text>}
+                        </View>
+
+                        <View style={{ alignItems: 'center', marginVertical: 10 }}>
+                            {allImg && <Image source={{ uri: allImg.uri }} style={{ width: 100, height: 100, marginBottom: 10, borderRadius: 8 }} />}
+                            <Button title="Selecionar Imagem" onPress={pickImage} />
                         </View>
 
                         {isWaiting ? <Spinner /> : <ActionButton title="Cadastrar" onPress={onSubmit} />}

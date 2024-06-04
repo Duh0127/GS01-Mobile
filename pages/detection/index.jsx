@@ -6,6 +6,8 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Feather } from "@expo/vector-icons";
 import * as MediaLibrary from 'expo-media-library';
 import { styles } from './styles';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
 
 export default function Detection() {
     const camRef = useRef(null);
@@ -14,6 +16,9 @@ export default function Detection() {
     const [capturedPhoto, setCapturedPhoto] = useState(null);
     const [cameraPermission, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermission, requestMediaLibraryPermission] = MediaLibrary.usePermissions();
+    const [image, setImage] = useState(null);
+    const [allImg, setAllImg] = useState(null);
+    const [result, setResult] = useState(null);
 
     function toggleCameraFacing() {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
@@ -41,6 +46,56 @@ export default function Detection() {
         }
     }
 
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Desculpe, precisamos de permissões para acessar a galeria!');
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [3, 4],
+            quality: 0.5,
+        });
+
+        if (!result.canceled) {
+            console.log(result);
+            setAllImg(result.assets[0]);
+            setImage(result.assets[0].uri);
+        }
+    };
+
+    const uploadImage = async () => {
+        if (!image) {
+            alert('Selecione uma imagem antes de enviar!');
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('file', {
+            uri: allImg.uri,
+            name: allImg.fileName,
+            type: allImg.mimeType,
+        });
+
+        try {
+            const response = await axios.post('https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/image/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Resposta:', response.data);
+
+            setResult(response.data);
+        } catch (error) {
+            console.error('Erro ao fazer upload da imagem:', error);
+        }
+    };
+
+
+
     if (!cameraPermission || !mediaLibraryPermission) {
         return <View />;
     }
@@ -67,7 +122,14 @@ export default function Detection() {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
-                <ImageBackground source={fundo} style={styles.imgFundo}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Button title="Selecionar Imagem" onPress={pickImage} />
+                    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                    <Button title="Enviar Imagem" onPress={uploadImage} />
+                    {result && <Text>Resultado: {JSON.stringify(result)}</Text>}
+                </View>
+
+                {/* <ImageBackground source={fundo} style={styles.imgFundo}>
                     <CameraView
                         style={styles.cameraView}
                         facing={facing}
@@ -98,7 +160,7 @@ export default function Detection() {
                             </TouchableOpacity>
                         </View>
                     </Modal>
-                )}
+                )} */}
             </SafeAreaView>
         </SafeAreaProvider>
     )

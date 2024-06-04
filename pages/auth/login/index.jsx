@@ -51,8 +51,7 @@ export default function Login() {
             await AsyncStorage.setItem('token', data.token);
             await AsyncStorage.setItem('user', JSON.stringify(data.usuario));
             ToastAndroid.show('Login realizado com sucesso', ToastAndroid.LONG);
-            updateLogin();
-            setTimeout(() => navigation.navigate('Perfil'), 2500);
+            navigation.navigate('Perfil');
         } catch (error) {
             ToastAndroid.show('Email ou senha inválidos', ToastAndroid.SHORT);
         } finally {

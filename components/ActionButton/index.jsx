@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 export default ActionButton;
 
 ActionButton.propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     onPress: PropTypes.func,
     variant: PropTypes.oneOf(['primary', 'success', 'danger', 'secondary']),
 };
