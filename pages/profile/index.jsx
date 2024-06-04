@@ -1,9 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { styles } from "./styles";
 import { View, Text, ImageBackground, Image, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import imgFundo from '../../assets/fundo_perfil.jpg';
-import perfil from '../../assets/perfil.png';
 import AnimalCard from "../../components/AnimalCard";
 import CustomModal from "../../components/Modal";
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -11,7 +10,6 @@ import { api } from "../../services/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionButton from "../../components/ActionButton";
 import Spinner from "../../components/Spinner";
-import CustomButton from "../../components/Button";
 import Input from "../../components/Input";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from 'react-native-vector-icons';
@@ -27,6 +25,7 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [imageURL, setImageURL] = useState('');
     const [allImg, setAllImg] = useState(null);
+    const [isDetectedModal, setIsDetectedModal] = useState(false);
 
     const getDataFromAsyncStorage = async () => {
         try {
@@ -78,6 +77,7 @@ export default function Profile() {
             }
             formData.append('nome', editInfo.NM_USUARIO);
             formData.append('email', editInfo.EMAIL_USUARIO);
+            formData.append('senha', usuario.SENHA_USUARIO);
             if (editInfo.SENHA_USUARIO) formData.append('senha', editInfo.SENHA_USUARIO);
             else formData.append('senha', usuario.SENHA_USUARIO);
 
@@ -96,6 +96,17 @@ export default function Profile() {
             ToastAndroid.show('Perfil atualizado com sucesso', ToastAndroid.LONG);
         } catch (error) {
             ToastAndroid.show('Erro ao atualizar perfil', ToastAndroid.LONG);
+        }
+    }
+
+    // TODO: Implementar envio de imagem para detecção
+    const onSendImageToDetect = async () => {
+        try {
+            console.log('Enviando imagem para detecção');
+            setIsDetectedModal(false);
+            setAllImg(null);
+        } catch (error) {
+            ToastAndroid.show('Erro ao enviar imagem', ToastAndroid.LONG);
         }
     }
 
@@ -160,36 +171,32 @@ export default function Profile() {
                                     <Image source={{ uri: imageURL || '' }} style={styles.imgPerfil} />
                                     <Text style={styles.name}>{usuario.NM_USUARIO}</Text>
                                     <Text style={styles.email}>{usuario.EMAIL_USUARIO}</Text>
-                                    <CustomButton title="Escanear Animal" />
+                                    <ActionButton title={<><Feather name="camera" size={20} color="#fff" />{'  '}Detectar Animal</>} onPress={() => setIsDetectedModal(true)} />
                                     <View style={{ display: "flex", flexDirection: "row", gap: 12, justifyContent: "center" }}>
                                         <ActionButton title={<><Feather name="edit" size={20} color="#fff" />{'  '}Editar perfil</>} onPress={handleEdit} />
-                                        <ActionButton variant="danger" title="Deslogar" onPress={logout} />
+                                        <ActionButton variant="danger" title={<><Feather name="log-out" size={20} color="#fff" />{'  '}Sair</>} onPress={logout} />
                                     </View>
                                 </View>
 
-                                {isAnimalAssociated() && (
-                                    <View style={styles.animalsContainer}>
-                                        <Text style={styles.animalTitle}>Animais Encontrados</Text>
-                                        <View style={styles.animalsFoundContainer}>
-                                            {isAnimalAssociated() ? (
-                                                usuario.ANIMAIS.map(animal => (
-                                                    <AnimalCard
-                                                        key={animal.ID_ANIMAL}
-                                                        imageUrl={{ uri: animal.IMG_ANIMAL }}
-                                                        title={animal.NM_ANIMAL}
-                                                        otherName={animal.NM_CIENTIFICO_ANIMAL}
-                                                        onPress={() => handleCardClick(animal)}
-                                                    />
-                                                ))
-                                            ) : (
-                                                <Text style={styles.noAnimalText}>Nenhum animal encontrado</Text>
-                                            )}
-                                        </View>
+                                <View style={styles.animalsContainer}>
+                                    <Text style={styles.animalTitle}>Animais Encontrados</Text>
+                                    <View style={styles.animalsFoundContainer}>
+                                        {isAnimalAssociated() ? (
+                                            usuario.ANIMAIS.map(animal => (
+                                                <AnimalCard
+                                                    key={animal.ID_ANIMAL}
+                                                    imageUrl={{ uri: animal.IMG_ANIMAL }}
+                                                    title={animal.NM_ANIMAL}
+                                                    otherName={animal.NM_CIENTIFICO_ANIMAL}
+                                                    onPress={() => handleCardClick(animal)}
+                                                />
+                                            ))
+                                        ) : <Text style={styles.noAnimalText}>Nenhum animal encontrado</Text>}
                                     </View>
-                                )}
-
+                                </View>
                             </ScrollView>
                         </ImageBackground>
+
                         {showModal && (
                             <CustomModal visible={showModal} onClose={handleCloseModal}>
                                 <View style={styles.modalContent}>
@@ -263,6 +270,17 @@ export default function Profile() {
                                     <ActionButton title="Salvar" onPress={onEditSubmit} />
                                 </View>
 
+                            </CustomModal>
+                        )}
+
+                        {isDetectedModal && (
+                            <CustomModal title="Envie uma foto do animal" visible={isDetectedModal} onClose={() => setIsDetectedModal(false)} >
+                                <View style={styles.modalContent}>
+                                    {allImg && <Image source={{ uri: allImg.uri }} style={{ width: 280, height: 280, marginVertical: 15, borderRadius: 8 }} />}
+                                    {allImg && <Text style={{ color: 'green', textAlign: 'center' }}>Imagem selecionada</Text>}
+                                    <ActionButton variant="secondary" title={allImg ? "Trocar Imagem" : "Selecionar Imagem"} onPress={pickImage} />
+                                    <ActionButton title="Enviar Imagem" onPress={onSendImageToDetect} />
+                                </View>
                             </CustomModal>
                         )}
                     </>
