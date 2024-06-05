@@ -65,14 +65,11 @@ export default function Profile() {
                     name: allImg.fileName,
                     type: allImg.mimeType,
                 });
-                setUsuario({ ...usuario, IMG_USUARIO: allImg.fileName });
             }
             formData.append('nome', editInfo.NM_USUARIO);
             formData.append('email', editInfo.EMAIL_USUARIO);
-            formData.append('senha', editInfo.SENHA_USUARIO || usuario.SENHA_USUARIO);
 
             await api.put(`/usuario/${usuario.ID_USUARIO}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-
             setEditModal(false);
             setEditInfo({});
             setAllImg(null);
@@ -133,10 +130,18 @@ export default function Profile() {
 
     useFocusEffect(
         useCallback(() => {
-            setIsLoading(true);
-            console.log('\n\n\n\nUSE EFFECT\n\n\n\n');
-            getStaticData();
-            return () => { };
+            const fetchData = async () => {
+                setIsLoading(true);
+
+                const token = await AsyncStorage.getItem('token');
+                if (!token) {
+                    navigation.navigate('Home');
+                    return;
+                }
+
+                await getStaticData();
+            };
+            fetchData();
         }, [])
     );
 
@@ -254,18 +259,10 @@ export default function Profile() {
                                 onChange={value => setEditInfo({ ...editInfo, EMAIL_USUARIO: value })}
                                 keyboardType='email-address'
                             />
-                            <Input
-                                isPassword
-                                name="Senha"
-                                placeholder="Digite a nova senha"
-                                value={editInfo.SENHA_USUARIO}
-                                onChange={value => setEditInfo({ ...editInfo, SENHA_USUARIO: value })}
-                            />
                             {allImg && <Image source={{ uri: allImg.uri }} style={{ width: 100, height: 100, marginVertical: 15, borderRadius: 8 }} />}
                             {allImg && <Text style={{ color: 'green', textAlign: 'center' }}>Imagem selecionada</Text>}
 
                             <ActionButton variant="secondary" title={allImg ? "Trocar Imagem" : "Selecionar Imagem"} onPress={pickImage} />
-
                             <ActionButton title="Salvar" onPress={onEditSubmit} />
                         </View>
                     </CustomModal>
