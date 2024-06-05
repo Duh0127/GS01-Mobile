@@ -22,9 +22,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/usuario`
 > #### Descrição
 > ###### Essa rota serve para retornar todos os usuários cadastrados no sistema, trazendo as informações mais úteis e importantes
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 [
     {
         "ID_USUARIO": 1,
@@ -40,9 +39,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/usuario/<ID>`
 > #### Descrição
 > ###### Essa rota serve para retornar o usuário em específico, através do ID dele, obtendo informações para exibir no perfil do usuário no momento de login no sistema e vem junto às informações de animais associados à ele
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 {
     "ID_USUARIO": 1,
     "NM_USUARIO": "Usuário Teste",
@@ -81,10 +79,9 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/usuario`
 > #### Descrição
 > ###### Essa rota serve para cadastrar um novo usuário, sendo utilizado na parte de registro do sistema, onde o usuário informará NOME, EMAIL, SENHA e uma foto para o perfil. Essas informações são enviadas em FORMDATA por causa da imagem. Essa rota possui sistema de criptografia de senha, utilizando a biblioteca BCRYPT para criptografar utilizando SALT e HASH
-
-#### Corpo da Requisição
 ```json
-# LEMBRANDO QUE ESSES DADOS SÃO ENVIADOS EM FORMATO [FORM DATA] PARA A BIBLIOTECA NO BACKEND SALVAR A IMAGEM
+ENVIO PARA A API
+OS DADOS SÃO ENVIADOS EM FORMATO [FORM DATA] PARA A BIBLIOTECA NO BACKEND SALVAR A IMAGEM
 {
     "nome": "Usuario Teste",
     "email": "teste@gmail.com",
@@ -92,14 +89,20 @@
     "image": "19238918239192318281.jpeg"
 }
 ```
+```json
+RETORNO DA API
+{
+    "message": "Usuário cadastrado com sucesso"
+}
+```
 
 ## ATUALIZAR USUÁRIOS `put`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/usuario/<ID>`
 > #### Descrição
 > ###### Essa rota serve para atualizar o usuário, sendo utilizado na página de perfil do usuário, caso ele queira alterar alguma informação de seu perfil
-#### Corpo da Requisição
 ```json
-# LEMBRANDO QUE ESSES DADOS SÃO ENVIADOS EM FORMATO [FORM DATA] PARA A BIBLIOTECA NO BACKEND SALVAR A IMAGEM
+ENVIO PARA A API
+OS DADOS SÃO ENVIADOS EM FORMATO [FORM DATA] PARA A BIBLIOTECA NO BACKEND SALVAR A IMAGEM
 {
     "nome": "Alterando Usuário Teste",
     "email": "usuariotestealterado@outlook.com",
@@ -107,22 +110,46 @@
     "imagem": "1717455656269-f471e9a2-ea25-4314-a73f-53513a2f480b.jpeg"
 }
 ```
+```json
+RETORNO DA API
+
+Informações do usuário atualizadas com sucesso
+```
 
 ## EXCLUIR USUÁRIOS `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/usuario/<ID>`
 > #### Descrição
 > ###### Essa rota serve para deletar um perfil cadastrado, passando somente o ID do perfil do usuário
+```json
+RETORNO DA API
+{
+    "message": "Usuário <ID> excluído com sucesso"
+}
+```
 
 ## LOGIN USUÁRIOS `post`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/login`
 > #### Descrição
 > ###### Essa rota serve para realizar o login no sistema, informando o EMAIL e SENHA cadastrados
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "email": "usuarioteste@gmail.com",
     "senha": "senhaForte"
+}
+```
+```json
+RETORNO DA API
+{
+    "message": "Login efetuado com sucesso",
+    "usuario": {
+        "ID_USUARIO": 1,
+        "NM_USUARIO": "Usuário Teste",
+        "EMAIL_USUARIO": "usuarioteste@gmail.com",
+        "IMG_USUARIO": "1717545715438-87052358-abd2-4674-97d6-c12078633455.jpeg",
+        "DT_CADASTRO": "2024-06-04T20:40:20.000Z"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOjI4LCJpYXQiOjE3MTc2Mjg3NzF9.E2tnTwFkSr0w1fw2ftheHO8PtQuKTyH8YGoZxjkDeEg"
 }
 ```
 
@@ -130,25 +157,58 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/vincular-usuario-animais`
 > #### Descrição
 > ###### Essa rota serve para associar os animais ao usuário. Será utilizada quando o backend de inteligência artificial identificar qual o animal é o que foi enviado, com isso será associado ao usuário para ficar como um registro conténdo informações sobre o animal
-
-#### Corpo da Requisição
 ```json
+ENVIAR PARA A API
 {
     "ID_USUARIO": 1,
-    "ID_ANIMAIS" : [2, 4, 8, 10, 35, 1]
+    "ID_ANIMAIS" : [2, 4, 8]
+}
+```
+```json
+RETORNO DA API
+{
+    "message": "Usuário vinculado aos animais com sucesso",
+    "vinculados": [
+        {
+            "ID_ANIMAL": 2
+        },
+        {
+            "ID_ANIMAL": 4
+        },
+        {
+            "ID_ANIMAL": 8
+        },
+    ]
 }
 ```
 
-## ASSOCIAR ANIMAIS AOS USUÁRIOS `del`
+
+## DESASSOCIAR ANIMAIS AOS USUÁRIOS `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/desvincular-usuario-animais`
 > #### Descrição
 > ###### Essa rota serve para desassociar os animais ao usuário passando os IDs dos animais e o ID do usuário
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "ID_USUARIO": 3,
     "ID_ANIMAIS" : [1, 32, 87]
+}
+```
+```json
+RETORNO DA API
+{
+    "message": "Animais desvinculados do usuário com sucesso",
+    "desvinculados": [
+        {
+            "ID_ANIMAL": 1
+        },
+        {
+            "ID_ANIMAL": 32
+        },
+        {
+            "ID_ANIMAL": 87
+        }
+    ]
 }
 ```
 ---
@@ -169,9 +229,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal`
 > #### Descrição
 > ###### Essa rota serve para retornar todos os animais cadastrados no sistema, trazendo informações que são úteis na exibição
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 [
     {
         "ID_ANIMAL": 1,
@@ -242,9 +301,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal/<ID>`
 > #### Descrição
 > ###### Essa rota serve para retornar o animal em específico, trazendo informações mais detalhadas
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 {
   "ID_ANIMAL": 2,
   "NM_ANIMAL": "Arraia",
@@ -282,9 +340,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal`
 > #### Descrição
 > ###### Essa rota serve para cadastrar um animal no sistema, informando dieta, espécie, nome, nome científico, descrição, status, imagem e os habitats que ele se encontra
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "ID_DIETA": 2,
     "ID_ESPECIE": 3,
@@ -296,14 +353,19 @@
     "HABITATS": [4]
 }
 ```
+```json
+RETORNO DA API
+{
+    "message": "Animal cadastrado com sucesso"
+}
+```
 
 ## ATUALIZAR DADOS DE UM ANIMAL `put`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal/<ID>`
 > #### Descrição
 > ###### Essa rota serve para atualizar informações de um animal no sistema, informando novas informações de dieta, espécie, nome, nome científico, descrição, status, imagem e os habitats que ele se encontra
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "ID_DIETA": 1,
     "ID_ESPECIE": 4,
@@ -315,11 +377,21 @@
     "HABITATS": [9, 1, 4]
 }
 ```
+```json
+RETORNO DA API
+
+Informações do animal foram atualizadas com sucesso
+```
 
 ## DELETAR UM ANIMAL `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal/<ID>`
 > #### Descrição
 > ###### Essa rota serve para deletar o animal cadastrado no sistema, passando apenas o ID dele na rota
+```json
+{
+    "message": "Animal <ID> excluído com sucesso"
+}
+```
 
 ---
 > [!NOTE]
@@ -334,9 +406,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/dieta`
 > #### Descrição
 > ###### Essa rota serve para buscar todas as dietas cadastradas no sistema, exibindo id, nome e descrição
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 [
     {
         "ID_DIETA": 2,
@@ -360,9 +431,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/dieta/<ID>`
 > #### Descrição
 > ###### Essa rota serve para buscar uma dieta em específico, exibindo id, nome e descrição
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 {
     "ID_DIETA": 2,
     "NM_DIETA": "Carnívoro",
@@ -374,12 +444,17 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/dieta`
 > #### Descrição
 > ###### Essa rota serve para criar uma nova dieta, informando nome e descrição
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_DIETA": "Onívoros",
     "DESC_DIETA": "Essa dieta são para animais que consomem tanto plantas quanto animais."
+}
+```
+```json
+RETORNO DA API
+{
+    "message": "Dieta cadastrada com sucesso"
 }
 ```
 
@@ -387,19 +462,28 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/dieta/<ID>`
 > #### Descrição
 > ###### Essa rota serve para editar uma dieta, informando um novo nome e descrição`
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_DIETA": "Onívoros Alterado",
     "DESC_DIETA": "Essa dieta alterada são para animais que consomem tanto plantas quanto animais."
 }
+```
+```json
+RETORNO DA API
+
+Informações da dieta atualizadas com sucesso
 ```
 
 ## EXCLUIR UMA DIETA  `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/dieta/<ID>`
 > #### Descrição
 > ###### Essa rota serve para excluir uma dieta, informando apenas o ID na rota
+```json
+{
+    "message": "Dieta <ID> excluída com sucesso"
+}
+```
 
 ---
 > [!NOTE]
@@ -416,9 +500,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/especie`
 > #### Descrição
 > ###### Essa rota serve para buscar todas as espécies, trazendo id, nome, descrição e data de cadastro
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 [
     {
         "ID_ESPECIE": 3,
@@ -439,9 +522,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/especie/<ID>`
 > #### Descrição
 > ###### Essa rota serve para buscar uma espécie em específico, exibindo id, nome, descrição e data de cadastro
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 {
     "ID_ESPECIE": 3,
     "NM_ESPECIE": "Dasyatis acutirostra",
@@ -454,12 +536,17 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/especie`
 > #### Descrição
 > ###### Essa rota serve para criar uma nova espécie, informando nome e descrição
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_ESPECIE": "Nova Espécie",
     "DESC_ESPECIE": "Essa espécie é para animais novos"
+}
+```
+```json
+RETORNO DA API
+{
+    "message": "Espécie cadastrada com sucesso"
 }
 ```
 
@@ -467,19 +554,28 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/especie/<ID>`
 > #### Descrição
 > ###### Essa rota serve para editar uma espécie, informando um novo nome e descrição`
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_ESPECIE": "Nova espécie alterada",
     "DESC_ESPECIE": "Especie para animais novos alterada"
 }
+```
+```json
+RETORNO DA API
+
+Informações da espécie atualizadas com sucesso
 ```
 
 ## EXCLUIR UMA ESPÉCIE  `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/especie/<ID>`
 > #### Descrição
 > ###### Essa rota serve para excluir uma espécie, informando apenas o ID na rota
+```json
+{
+    "message": "Espécie <ID> excluída com sucesso"
+}
+```
 
 ---
 > [!NOTE]
@@ -499,9 +595,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/habitat`
 > #### Descrição
 > ###### Essa rota serve para buscar todas os habitats, trazendo id, nome, descrição, clima, vegetação, região e data de cadastro
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 [
     {
         "ID_HABITAT": 2,
@@ -528,9 +623,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/habitat/<ID>`
 > #### Descrição
 > ###### Essa rota serve para buscar um habitat em específico, exibindo id, nome, descrição, clima, vegetação, região e data de cadastro
-
-#### Corpo da Requisição
 ```json
+RETORNO DA API
 {
     "ID_HABITAT": 2,
     "NM_HABITAT": "Habitat Teste",
@@ -546,9 +640,8 @@
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/habitat`
 > #### Descrição
 > ###### Essa rota serve para criar um novo habitat, informando nome, descrição, clima, vegetação e região
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_HABITAT": "Habitat Teste",
     "DESC_HABITAT": "descrição do habitat teste",
@@ -557,14 +650,19 @@
     "REGIAO_HABITAT": "Oceano Índico",
 },
 ```
+```json
+RETORNO DA API
+{
+    "message": "Habitat cadastrada com sucesso"
+}
+```
 
 ## EDITAR UM HABITAT  `put`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/habitat/<ID>`
 > #### Descrição
 > ###### Essa rota serve para editar uma espécie, informando nome, descrição, clima, vegetação e região`
-
-#### Corpo da Requisição
 ```json
+ENVIO PARA A API
 {
     "NM_HABITAT": "Habitat Teste Alterado",
     "DESC_HABITAT": "descrição do habitat teste alterado",
@@ -573,8 +671,18 @@
     "REGIAO_HABITAT": "Oceano Glacial Ártico",
 },
 ```
+```json
+RETORNO DA API
+
+Informações do habitat foram atualizadas com sucesso
+```
 
 ## EXCLUIR UM HABITAT  `del`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/habitat/<ID>`
 > #### Descrição
 > ###### Essa rota serve para excluir um habitat, informando apenas o ID na rota
+```json
+{
+    "message": "Habitat <ID> excluído com sucesso"
+}
+```
