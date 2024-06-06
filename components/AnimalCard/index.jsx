@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         margin: 8,
         padding: 10,
+        width: 140,
     },
     image: {
         width: 120,
@@ -37,8 +38,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     otherName: {
-        fontSize: 14,
+        fontSize: 12,
         textAlign: 'center',
+        wordWrap: 'break-word',
     }
 });
 
