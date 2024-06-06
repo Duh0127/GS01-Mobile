@@ -13,6 +13,7 @@ import Spinner from "../../components/Spinner";
 import Input from "../../components/Input";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from 'react-native-vector-icons';
+import ServerError from "../../components/ServerError";
 
 export default function Profile() {
     const navigation = useNavigation();
@@ -25,9 +26,11 @@ export default function Profile() {
     const [imageURL, setImageURL] = useState('');
     const [allImg, setAllImg] = useState(null);
     const [isDetectedModal, setIsDetectedModal] = useState(false);
+    const [error, setError] = useState(false);
 
     const getStaticData = async () => {
         try {
+            setError(false);
             let userByStorage = await AsyncStorage.getItem('user');
             userByStorage = await JSON.parse(userByStorage);
             if (userByStorage) {
@@ -40,6 +43,7 @@ export default function Profile() {
                 reader.onloadend = () => setImageURL(reader.result);
             }
         } catch (error) {
+            setError(true);
             ToastAndroid.show('Erro ao buscar dados do usuário', ToastAndroid.LONG);
         } finally {
             setIsLoading(false);
@@ -144,6 +148,8 @@ export default function Profile() {
             fetchData();
         }, [])
     );
+
+    if (error) return <ServerError />;
 
     if (isLoading) {
         return (

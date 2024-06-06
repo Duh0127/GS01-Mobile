@@ -8,6 +8,7 @@ import Home from "../pages/home";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Profile from "../pages/profile";
+import ServerError from "../components/ServerError";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
