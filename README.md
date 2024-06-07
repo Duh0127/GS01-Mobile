@@ -12,6 +12,8 @@
 > ##### - Após isso, substituir a url no arquivo API.js
 > ##### - A url deve ser a mesma que aparece no na aba WEBVIEW no replit
 ![Explicação URL](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
 
 ### LINK REPOSITÓRIO: https://github.com/Duh0127/GS01-Mobile
 ### LINK BACKEND NO REPLIT: https://replit.com/@rodatupmocgamer/OceanDex?v=1
