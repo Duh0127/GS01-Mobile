@@ -6,6 +6,13 @@
 > ##### Vitor Machado Miranda - RM551451
 ---
 ---
+### LINK REPOSITÓRIO: https://github.com/Duh0127/GS01-Mobile
+### LINK BACKEND NO REPLIT: https://replit.com/@rodatupmocgamer/OceanDex?v=1
+### CREDENCIAIS DE ACESSO AO PERFIL TESTE
+> ##### Email: fiap@email.com
+> ##### Senha: fiap24
+---
+---
 ## Como utilizar o backend
 > ##### - Acessar o link do replit
 > ##### - Dar um FORK para sua conta pessoal
@@ -15,10 +22,3 @@
 ![Explicação URL](image.png)
 ![alt text](image-1.png)
 ![alt text](image-2.png)
-
-### LINK REPOSITÓRIO: https://github.com/Duh0127/GS01-Mobile
-### LINK BACKEND NO REPLIT: https://replit.com/@rodatupmocgamer/OceanDex?v=1
-
-### CREDENCIAIS DE ACESSO AO PERFIL TESTE
-> ##### Email: fiap@email.com
-> ##### Senha: fiap24 
