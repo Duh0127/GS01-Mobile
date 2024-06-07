@@ -114,7 +114,16 @@ export default function Profile() {
             const animalName = data.prediction.replace(/[0-9]/g, '').trim();
             const { data: animalData } = await api.get(`/animal/nome/${animalName}`)
             const sendLink = { ID_USUARIO: usuario.ID_USUARIO, ID_ANIMAIS: [animalData.ID_ANIMAL] }
-            await api.post('/vincular-usuario-animais', sendLink);
+            const { data: linkAnimal } = await api.post('/vincular-usuario-animais', sendLink);
+            if (linkAnimal.message === 'Esse usuário ja possui esses animais vinculados') {
+                ToastAndroid.show('Animal já vinculado ao perfil', ToastAndroid.LONG);
+                setIsDetectedModal(false);
+                setAllImg(null);
+                setErrorImage(false);
+                setAnimalDetected({});
+                getStaticData();
+                return;
+            }
             ToastAndroid.show('Animal detectado com sucesso e Vinculado ao perfil', ToastAndroid.LONG);
 
             setIsDetectedModal(false);
