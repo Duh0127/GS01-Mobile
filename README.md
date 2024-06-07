@@ -7,7 +7,8 @@
 ---
 ---
 ### LINK REPOSITÓRIO: https://github.com/Duh0127/GS01-Mobile
-### LINK BACKEND NO REPLIT: https://replit.com/@rodatupmocgamer/OceanDex?v=1
+### LINK BACKEND NODEJS: https://replit.com/@rodatupmocgamer/OceanDex?v=1
+### LINK BACKEND IA: https://replit.com/@rodatupmocgamer/ApiFlaskAPI?v=1
 ### CREDENCIAIS DE ACESSO AO PERFIL TESTE
 > ##### Email: fiap@email.com
 > ##### Senha: fiap24
@@ -50,7 +51,11 @@ Este guia fornece as instruções necessárias para utilizar os backends NodeJs 
 ![alt text](image-1.png)
 ![alt text](image-2.png)
 
+---
+
 ## Utilização do Backend de IA
+### Acessar o Link do Replit
+- Clique no [link do Replit de IA](https://replit.com/@rodatupmocgamer/ApiFlaskAPI?v=1) fornecido.
 ### Repetir os Passos do Backend NodeJs
 - Siga os mesmos passos mencionados na seção "Utilização do Backend NodeJs" para configurar o backend de IA.
 
