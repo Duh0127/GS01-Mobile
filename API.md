@@ -347,6 +347,23 @@ RETORNO DA API
 }
 ```
 
+## BUSCAR O ANIMAL PELO NOME `get`
+`https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal/nome/<nome do animal>`
+> #### Descrição
+> ###### Essa rota serve para retornar o animal em específico, trazendo informações básicas apenas para informar ao usuário
+```json
+RETORNO DA API
+{
+  "ID_ANIMAL": 2,
+  "NM_ANIMAL": "Arraia",
+  "NM_CIENTIFICO_ANIMAL": "Batoidea",
+  "DESC_ANIMAL": "As arraias são peixes cartilaginosos com corpos achatados e largas barbatanas peitorais. Vivem em águas tropicais e temperadas, muitas vezes no fundo do mar. Alimentam-se de moluscos e pequenos peixes.",
+  "STATUS_ANIMAL": "PRESERVADO",
+  "IMG_ANIMAL": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Spotted_Eagle_Ray_%28Aetobatus_narinari%292.jpg",
+  "DT_CAD_ANIMAL": "2024-06-03T20:54:13.000Z",
+}
+```
+
 ## CADASTRAR UM ANIMAL `post`
 `https://724eb3fb-fa02-4fee-8112-d0a446e26785-00-3b683zux34iwn.janeway.replit.dev/animal`
 > #### Descrição
@@ -406,6 +423,7 @@ Informações do animal foram atualizadas com sucesso
 
 ---
 > [!NOTE]
+
 > # Tabela DIETA
 > | Coluna      | Tipo   | Obrigatório | Descrição           |
 > |-------------|--------|-------------|---------------------|
@@ -498,6 +516,7 @@ Informações da dieta atualizadas com sucesso
 
 ---
 > [!NOTE]
+
 > # Tabela ESPÉCIE
 > | Coluna        | Tipo   | Obrigatório | Descrição                    |
 > |---------------|--------|-------------|------------------------------|
@@ -590,6 +609,7 @@ Informações da espécie atualizadas com sucesso
 
 ---
 > [!NOTE]
+
 > # Tabela HABITAT
 > | Coluna          | Tipo   | Obrigatório | Descrição                       |
 > |-----------------|--------|-------------|---------------------------------|
