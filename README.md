@@ -15,6 +15,25 @@
 ---
 ---
 
+# NOSSO PROTÓTIPO POSSUI SUPORTE PARA DETECTAR APENAS OS SEGUINTES ANIMAIS MARINHOS:
+> ##### - Arraia-Jamanta
+> ##### - Baleia-Jubarte
+> ##### - Boto-Cor-de-Rosa
+> ##### - Camarão-Rosa
+> ##### - Caranguejo-Azul
+> ##### - Cavalo-Marinho
+> ##### - Coral-Cérebro
+> ##### - Estrela-do-Mar
+> ##### - Golfinho-Rotador
+> ##### - Lagosta
+> ##### - Tartaruga-Verde
+> ##### - Tubarão-Martelo
+> ##### - Raia-Manta
+> ##### - Polvo
+> ##### - Peixe-Palhaço
+
+---
+---
 # Sumário para Utilização do Backend NodeJs e Backend de IA
 
 ## Índice
