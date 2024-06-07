@@ -6,7 +6,7 @@ import imgFundo from '../../assets/fundo_perfil.jpg';
 import AnimalCard from "../../components/AnimalCard";
 import CustomModal from "../../components/Modal";
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { api } from "../../services/api";
+import { api, IAApi } from "../../services/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionButton from "../../components/ActionButton";
 import Spinner from "../../components/Spinner";
@@ -14,6 +14,7 @@ import Input from "../../components/Input";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from 'react-native-vector-icons';
 import ServerError from "../../components/ServerError";
+import axios from "axios";
 
 export default function Profile() {
     const navigation = useNavigation();
@@ -27,6 +28,9 @@ export default function Profile() {
     const [allImg, setAllImg] = useState(null);
     const [isDetectedModal, setIsDetectedModal] = useState(false);
     const [error, setError] = useState(false);
+    const [errorImage, setErrorImage] = useState(false);
+    const [animalDetected, setAnimalDetected] = useState({});
+    const [isWaitingDetection, setIsWaitingDetection] = useState(false);
 
     const getStaticData = async () => {
         try {
@@ -86,11 +90,42 @@ export default function Profile() {
 
     const onSendImageToDetect = async () => {
         try {
-            console.log('Enviando imagem para detecção');
+            setIsWaitingDetection(true);
+            const formData = new FormData();
+            formData.append('file', {
+                uri: allImg.uri,
+                name: allImg.fileName,
+                type: allImg.mimeType,
+            });
+
+            const { data } = await IAApi.post('/predict-image', formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
+            );
+            console.log({ data });
+            setAnimalDetected(data);
+
+            if (data.confidence < 0.75) {
+                setErrorImage(true);
+                setAllImg(null);
+                ToastAndroid.show('Animal não detectado, informe uma imagem melhor', ToastAndroid.LONG);
+                return;
+            }
+
+            const animalName = data.prediction.replace(/[0-9]/g, '').trim();
+            const { data: animalData } = await api.get(`/animal/nome/${animalName}`)
+            const sendLink = { ID_USUARIO: usuario.ID_USUARIO, ID_ANIMAIS: [animalData.ID_ANIMAL] }
+            await api.post('/vincular-usuario-animais', sendLink);
+            ToastAndroid.show('Animal detectado com sucesso e Vinculado ao perfil', ToastAndroid.LONG);
+
             setIsDetectedModal(false);
             setAllImg(null);
+            setErrorImage(false);
+            setAnimalDetected({});
+            getStaticData();
         } catch (error) {
-            ToastAndroid.show('Erro ao enviar imagem', ToastAndroid.LONG);
+            ToastAndroid.show('Erro ao enviar imagem para detecção', ToastAndroid.LONG);
+        } finally {
+            setIsWaitingDetection(false);
         }
     };
 
@@ -123,13 +158,13 @@ export default function Profile() {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [3, 4],
-            quality: 0.3,
+            quality: 1,
         });
 
         if (!result.canceled) {
             setAllImg(result.assets[0]);
         }
+        setErrorImage(false);
     };
 
     useFocusEffect(
@@ -275,12 +310,29 @@ export default function Profile() {
                 )}
 
                 {isDetectedModal && (
-                    <CustomModal title="Envie uma foto do animal" visible={isDetectedModal} onClose={() => setIsDetectedModal(false)}>
+                    <CustomModal title="Envie uma foto do animal" visible={isDetectedModal} onClose={() => {
+                        setIsDetectedModal(false)
+                        setAllImg(null);
+                        setErrorImage(false);
+                    }}>
                         <View style={styles.modalContent}>
                             {allImg && <Image source={{ uri: allImg.uri }} style={{ width: 280, height: 280, marginVertical: 15, borderRadius: 8 }} />}
-                            {allImg && <Text style={{ color: 'green', textAlign: 'center' }}>Imagem selecionada</Text>}
-                            <ActionButton variant="secondary" title={allImg ? "Trocar Imagem" : "Selecionar Imagem"} onPress={pickImage} />
-                            <ActionButton title="Enviar Imagem" onPress={onSendImageToDetect} />
+                            {errorImage && (
+                                <>
+                                    <Text style={{ color: 'red', textAlign: 'center', fontSize: 18, fontWeight: 800, textTransform: "uppercase" }}>Animal detectado incorretamente</Text>
+                                    {animalDetected && (
+                                        <View style={styles.detectContainer}>
+                                            <Text style={styles.animalPredictionText}>{animalDetected.prediction.replace(/[0-9]/g, '').trim()}</Text>
+                                            <Text style={styles.precisionText}>{(animalDetected.confidence * 100).toFixed(2)}% de precisão</Text>
+                                            <Text style={styles.idealPrecisionText}>esperado maior que 75% </Text>
+                                        </View>
+                                    )}
+                                    <Text style={{ color: 'red', textAlign: 'center', marginBottom: 16 }}>Por favor, informe uma imagem melhor</Text>
+                                </>
+                            )}
+                            {!allImg && <ActionButton variant="secondary" title={allImg ? "Trocar Imagem" : "Selecionar Imagem"} onPress={pickImage} />}
+                            {isWaitingDetection && <Spinner />}
+                            {!isWaitingDetection && allImg && <ActionButton title="Enviar Imagem" onPress={onSendImageToDetect} />}
                         </View>
                     </CustomModal>
                 )}

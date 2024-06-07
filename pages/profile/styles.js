@@ -125,5 +125,31 @@ export const styles = StyleSheet.create({
     descriptionText: {
         fontSize: 14,
         textAlign: "justify",
-    }
+    },
+    detectContainer: {
+        borderWidth: 3,
+        borderColor: "#fff",
+        backgroundColor: "#fff",
+        elevation: 5,
+        borderRadius: 12,
+        padding: 10,
+        marginVertical: 16,
+    },
+    animalPredictionText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 10,
+    },
+    precisionText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 5,
+    },
+    idealPrecisionText: {
+        fontSize: 14,
+        textAlign: "center",
+        marginBottom: 5,
+    },
 });
